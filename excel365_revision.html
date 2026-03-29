@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MS-Excel 365 — Last Day Revision</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --surface2: #1e2128;
+    --border: #2a2d35;
+    --border2: #363a45;
+    --text: #e8eaf0;
+    --muted: #7c8098;
+    --hint: #4a4e60;
+    --blue: #4d9ef7;
+    --blue-bg: #0d1e35;
+    --green: #3ecf7a;
+    --green-bg: #0a2418;
+    --amber: #f5a623;
+    --amber-bg: #271c07;
+    --red: #f26b6b;
+    --red-bg: #250f0f;
+    --purple: #a78bfa;
+    --purple-bg: #1a1030;
+    --accent: #4d9ef7;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --display: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 2.5rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #111318 0%, var(--bg) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header h1 {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .header h1 span { color: var(--accent); }
+
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .hbadge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    background: var(--surface);
+    letter-spacing: 0.05em;
+  }
+
+  /* TABS */
+  .tabs-wrap {
+    max-width: 900px;
+    margin: 1.5rem auto 0;
+    padding: 0 2rem;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.04em;
+  }
+
+  .tab:hover { border-color: var(--border2); color: var(--text); }
+
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0a1a2e;
+    font-weight: 500;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 2rem 4rem;
+  }
+
+  .section { display: none; animation: fadeIn 0.2s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* GRID */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+  @media (max-width: 640px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    main { padding: 0 1rem 4rem; }
+    .header { padding: 1.5rem 1rem 1rem; }
+    .tabs-wrap { padding: 0 1rem; }
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+
+  .card:hover { border-color: var(--border2); }
+
+  .card-title {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  /* BADGE */
+  .badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.07em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .b-blue   { background: var(--blue-bg);   color: var(--blue);   border: 1px solid #1a3a5c; }
+  .b-green  { background: var(--green-bg);  color: var(--green);  border: 1px solid #0e3a22; }
+  .b-amber  { background: var(--amber-bg);  color: var(--amber);  border: 1px solid #3d2c0a; }
+  .b-red    { background: var(--red-bg);    color: var(--red);    border: 1px solid #3d1515; }
+  .b-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid #2e1f5c; }
+
+  /* ITEMS */
+  .item {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .item:last-child { border-bottom: none; padding-bottom: 0; }
+  .item::before { content: '›'; color: var(--hint); flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+
+  .item strong { font-weight: 500; color: var(--text); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    background: var(--surface2);
+    color: var(--blue);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .tip {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--hint);
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: var(--bg);
+    border-radius: 6px;
+    border-left: 2px solid var(--border2);
+  }
+
+  /* SECTION LABEL */
+  .slabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--hint);
+    text-transform: uppercase;
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .slabel:first-child { margin-top: 0; }
+
+  /* FORMULA BLOCK */
+  .formula-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--blue);
+    margin: 4px 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+  /* PROGRESS DOTS */
+  .progress {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--border2);
+    transition: background 0.2s;
+  }
+  .dot.active { background: var(--accent); width: 16px; border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>MS-Excel <span>365</span> — Revision</h1>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+      <div class="badge-row">
+        <span class="hbadge">BASICS</span>
+        <span class="hbadge">FORMATTING</span>
+        <span class="hbadge">FUNCTIONS</span>
+        <span class="hbadge">DATA TOOLS</span>
+        <span class="hbadge">CHARTS</span>
+        <span class="hbadge">ADVANCED</span>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <button class="tab active" onclick="show('basics',0)">Basics</button>
+  <button class="tab" onclick="show('formatting',1)">Formatting</button>
+  <button class="tab" onclick="show('functions',2)">Functions</button>
+  <button class="tab" onclick="show('data',3)">Data Tools</button>
+  <button class="tab" onclick="show('charts',4)">Charts</button>
+  <button class="tab" onclick="show('advanced',5)">Advanced</button>
+</div>
+
+<main>
+
+<!-- ===================== BASICS ===================== -->
+<div id="basics" class="section active">
+
+  <p class="slabel">Interface</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Components</span></div>
+      <div class="item"><strong>Workbook</strong> = Excel file; 3 sheets by default</div>
+      <div class="item"><strong>Name Box</strong> = active cell address</div>
+      <div class="item"><strong>Formula Bar</strong> = view / enter formulas or text</div>
+      <div class="item"><strong>Ribbon</strong> = Home, Insert, Page Layout, Formulas, Data, Review, View</div>
+      <div class="item">Navigate: <code>Ctrl+G</code> or Home → Find & Select → Go To</div>
+      <div class="item">Select all: <code>Ctrl+A</code></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">Data Types</span></div>
+      <div class="item"><strong>Text</strong> — left-aligned by default</div>
+      <div class="item"><strong>Number</strong> — right-aligned; supports %, currency, decimals</div>
+      <div class="item"><strong>Date</strong> — <code>mm/dd/yy</code> format; treated as number</div>
+      <div class="item"><strong>Time</strong> — <code>hrs:min:sec</code>; no AM/PM = assumes AM</div>
+      <div class="item"><strong>Formula</strong> — always starts with <code>=</code></div>
+    </div>
+  </div>
+
+  <p class="slabel">Cell References</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-amber">Reference Types</span></div>
+    <div class="item"><strong>Relative</strong> — <code>A2</code> — adjusts when copied</div>
+    <div class="item"><strong>Absolute</strong> — <code>$A$2</code> — never changes</div>
+    <div class="item"><strong>Mixed</strong> — <code>$A2</code> (col fixed) or <code>A$2</code> (row fixed)</div>
+    <div class="item"><strong>Cross-sheet</strong> — <code>Sheet2!A1</code></div>
+    <div class="item"><strong>Cross-workbook</strong> — <code>[SALARY.xlsx]Sheet1!B2</code></div>
+  </div>
+
+  <p class="slabel">Quick Data Entry</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">AutoComplete / AutoCorrect</span></div>
+      <div class="item">Works <strong>column-wise</strong> for text only</div>
+      <div class="item">No blank cells allowed in the column</div>
+      <div class="item">Toggle: File → Options → Advanced → Enable AutoComplete</div>
+      <div class="item">AutoCorrect: File → Options → Proofing → AutoCorrect Options</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">AutoFill / AutoSum / AutoFit</span></div>
+      <div class="item"><strong>AutoFill</strong> — drag fill handle; type 2 numbers first for series</div>
+      <div class="item">Custom list: File → Options → Advanced → Edit Custom Lists</div>
+      <div class="item"><strong>AutoSum</strong> — select range → Home → AutoSum; total in next cell</div>
+      <div class="item"><strong>AutoFit</strong> — Home → Cells → Format → AutoFit Row/Column Width</div>
+    </div>
+  </div>
+
+  <p class="slabel">Selection Shortcuts</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-purple">Selecting Ranges</span></div>
+    <div class="item">Contiguous range: click top-left, drag to bottom-right <em>or</em> Shift+Arrow</div>
+    <div class="item">Non-contiguous: hold <code>Ctrl</code> while selecting each range</div>
+    <div class="item">Entire row/column: click row number or column letter</div>
+    <div class="item">Entire sheet: <code>Ctrl+A</code> or click the top-left corner button</div>
+  </div>
+
+</div>
+
+<!-- ===================== FORMATTING ===================== -->
+<div id="formatting" class="section">
+
+  <p class="slabel">Number Formats</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Format Cells → Number tab</span></div>
+      <div class="item"><strong>General</strong> — default; auto-rounds if cell too narrow</div>
+      <div class="item"><strong>Number</strong> — decimals, thousands sep (no currency symbol)</div>
+      <div class="item"><strong>Currency</strong> — symbol + decimals + negative display</div>
+      <div class="item"><strong>Accounting</strong> — monetary; symbols aligned</div>
+      <div class="item"><strong>Date / Time</strong> — multiple format options</div>
+      <div class="item"><strong>Percentage / Fraction / Scientific / Text</strong></div>
+      <div class="item"><strong>Special</strong> — pin code, phone number</div>
+      <div class="item"><strong>Custom</strong> — user-defined display format</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">Other Format Cells Tabs</span></div>
+      <div class="item"><strong>Alignment</strong> — horizontal/vertical, wrap text, merge</div>
+      <div class="item"><strong>Font</strong> — typeface, size, bold, italic, colour</div>
+      <div class="item"><strong>Border</strong> — style & colour</div>
+      <div class="item"><strong>Fill</strong> — background pattern & colour</div>
+      <div class="item"><strong>Protection</strong> — lock/unlock cells, hide formulas</div>
+      <div class="tip">Access: Right-click → Format Cells  OR  Home → Format → Format Cells</div>
+    </div>
+  </div>
+
+  <p class="slabel">Conditional Formatting</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-amber">Rules & Quick Analysis</span></div>
+    <div class="item">Select range → Home → Styles → Conditional Formatting → Highlight Cell Rules</div>
+    <div class="item">Custom rule: Conditional Formatting → New Rule → define condition → Format (Fill/Font/Border)</div>
+    <div class="item">Quick Analysis (<code>Ctrl+Q</code>) → Formatting → Data Bars / Color Scale / Icon Set / Greater Than / Top 10</div>
+    <div class="item">Clear rules: Conditional Formatting → Clear Rules</div>
+  </div>
+
+</div>
+
+<!-- ===================== FUNCTIONS ===================== -->
+<div id="functions" class="section">
+
+  <p class="slabel">Numeric</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Basic Math</span></div>
+      <div class="item"><code>MAX()</code> / <code>MIN()</code> — ignores text entries</div>
+      <div class="item"><code>SUM(B2:D2)</code></div>
+      <div class="item"><code>AVERAGE(B2:D2)</code></div>
+      <div class="item"><code>INT(52.67)</code> → 52</div>
+      <div class="item"><code>ROUND(12.635,1)</code> → 12.6</div>
+      <div class="item"><code>ROUND(32.935,-1)</code> → 30</div>
+      <div class="item"><code>RANDBETWEEN(50,60)</code> → random in range</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">Count Functions</span></div>
+      <div class="item"><code>COUNT(A1:B5)</code> — cells with numbers only</div>
+      <div class="item"><code>COUNTA(A1:B5)</code> — non-blank cells (any type)</div>
+      <div class="item"><code>COUNTBLANK(A1:B5)</code> — blank cells</div>
+      <div class="item"><code>COUNTIF(B2:B11,">=50")</code> — single condition</div>
+      <div class="item"><code>COUNTIFS(B2:B15,">=20000",C2:C15,"SALES")</code></div>
+    </div>
+  </div>
+
+  <p class="slabel">Conditional Aggregation</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-amber">SUMIF / AVERAGEIF / MAXIFS / MINIFS</span></div>
+    <div class="formula-block">=SUMIF(B2:B11,"MUMBAI",C2:C11)</div>
+    <div class="formula-block">=SUMIF(B2:B11,">=10000")</div>
+    <div class="formula-block">=SUMIFS(B2:B15,C2:C15,"PUR",D2:D15,">=15")</div>
+    <div class="formula-block">=AVERAGEIF(B2:B11,"MUMBAI",C2:C11)</div>
+    <div class="formula-block">=AVERAGEIFS(B2:B15,C2:C15,"SALES",D2:D15,">=10")</div>
+    <div class="formula-block">=MAXIFS(D2:D9,B2:B9,"PUR",C2:C9,"MANAGER")</div>
+    <div class="formula-block">=MINIFS(D2:D9,B2:B9,"PUR",C2:C9,"MANAGER")</div>
+  </div>
+
+  <p class="slabel">Logic</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-red">IF / IFS</span></div>
+    <div class="formula-block">=IF(A2>=40,"PASS","FAIL")</div>
+    <div class="formula-block">=IF(AND(A2>=40,B2>=40),"PASS","FAIL")</div>
+    <div class="formula-block">=IF(OR(A2>=40,B2>=40),"PASS","FAIL")</div>
+    <div class="formula-block">=IF(F2>=60,"FIRST",IF(F2>=45,"SECOND",IF(F2>=40,"PASS","FAIL")))</div>
+    <div class="formula-block">=IFS(F2>=60,"FIRST",F2>=45,"SECOND",F2>=40,"PASS",F2&lt;40,"FAIL")</div>
+    <div class="tip">IFS() replaces nested IF — no need to repeat IF keyword; still write every condition including the last</div>
+  </div>
+
+  <p class="slabel">Lookup & Reference</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">VLOOKUP / HLOOKUP / LOOKUP</span></div>
+      <div class="item"><strong>VLOOKUP</strong> — searches first column; table must be ascending</div>
+      <div class="formula-block">=VLOOKUP(E2,A2:B9,2,0)</div>
+      <div class="item"><strong>HLOOKUP</strong> — searches top row; same logic</div>
+      <div class="formula-block">=HLOOKUP(B2,$B$12:$D$13,2)*C2</div>
+      <div class="item"><strong>LOOKUP</strong> — single row/column vector</div>
+      <div class="formula-block">=LOOKUP(D2,$A$2:$A$4,$B$2:$B$4)*E2</div>
+      <div class="tip">Range lookup FALSE = exact match only</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">MATCH / INDEX</span></div>
+      <div class="item"><code>MATCH(val, array, 0)</code> → position of exact match</div>
+      <div class="item"><code>MATCH(val, array, 1)</code> → largest ≤ val (ascending data)</div>
+      <div class="item"><code>MATCH(val, array, -1)</code> → smallest ≥ val (descending data)</div>
+      <div class="formula-block">=MATCH("PUNE",A1:A15,0)</div>
+      <div class="item"><code>INDEX(array, row, col)</code> → value at intersection</div>
+      <div class="formula-block">=INDEX(A1:F15,7,5)</div>
+      <div class="tip">Combine MATCH+INDEX for flexible lookups on large data</div>
+    </div>
+  </div>
+
+  <p class="slabel">String Functions</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-purple">Extract & Transform</span></div>
+      <div class="item"><code>LEFT("COMPUTER",3)</code> → COM</div>
+      <div class="item"><code>RIGHT("COMPUTER",3)</code> → TER</div>
+      <div class="item"><code>MID("COMPUTER",4,3)</code> → PUT</div>
+      <div class="item"><code>LEN("COMPUTER")</code> → 8</div>
+      <div class="item"><code>UPPER("computer")</code> → COMPUTER</div>
+      <div class="item"><code>LOWER("COMPUTER")</code> → computer</div>
+      <div class="item"><code>PROPER("k j somaiya")</code> → K J Somaiya</div>
+      <div class="item"><code>TRIM("  hello  ")</code> → hello (removes extra spaces)</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-amber">Find, Join & Replace</span></div>
+      <div class="item"><code>CONCATENATE(A2," ",B2)</code> — joins strings</div>
+      <div class="item"><code>FIND("COLLEGE",A1)</code> → start position (case-sensitive)</div>
+      <div class="item"><code>REPT("MA ",5)</code> → MA MA MA MA MA</div>
+      <div class="item"><strong>REPLACE</strong> — by position</div>
+      <div class="formula-block">=REPLACE(A1,13,4,"COLLEGE")</div>
+      <div class="item"><strong>SUBSTITUTE</strong> — by text match</div>
+      <div class="formula-block">=SUBSTITUTE(A1,"1","2",1)</div>
+      <div class="tip">SUBSTITUTE with instance_num replaces only that occurrence</div>
+    </div>
+  </div>
+
+  <p class="slabel">Financial Functions</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">FV / PV / PMT</span></div>
+      <div class="item"><code>FV(rate,nper,pmt,[pv])</code> — future value</div>
+      <div class="item"><code>PV(rate,nper,pmt,[fv])</code> — present value</div>
+      <div class="item"><code>PMT(rate,nper,pv,[fv])</code> — loan instalment</div>
+      <div class="tip">Monthly rate = annual% ÷ 12 | nper = years × 12</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">PPMT / IPMT</span></div>
+      <div class="item"><code>PPMT(rate,per,nper,pv)</code> — principal portion of payment</div>
+      <div class="item"><code>IPMT(rate,per,nper,pv)</code> — interest portion of payment</div>
+      <div class="item"><strong>per</strong> = which period (e.g. 1 = first month)</div>
+      <div class="tip">For one-time deposit use pmt=0; for periodic payments use pv=0</div>
+    </div>
+  </div>
+
+  <p class="slabel">Date Functions</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-amber">TODAY / NOW / DAYS360</span></div>
+    <div class="item"><code>TODAY()</code> — returns current date</div>
+    <div class="item"><code>NOW()</code> — returns current date and time</div>
+    <div class="item"><code>DAYS360("8/1/2013","8/23/2013")</code> → 22 (based on 360-day year)</div>
+  </div>
+
+</div>
+
+<!-- ===================== DATA TOOLS ===================== -->
+<div id="data" class="section">
+
+  <p class="slabel">Sorting & Subtotals</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Sorting</span></div>
+      <div class="item">Data → Sort  OR  Home → Sort & Filter → Custom Sort</div>
+      <div class="item">Check "My Data Has Headers" if headings included</div>
+      <div class="item">Sort By → choose column → order (A→Z, Z→A, Smallest→Largest)</div>
+      <div class="item">Add Level for secondary sort (e.g. dept A→Z then salary descending)</div>
+      <div class="item">Delete Level removes a sort key</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">Subtotals</span></div>
+      <div class="item"><strong>Step 1:</strong> sort the data first</div>
+      <div class="item"><strong>Step 2:</strong> Data → Subtotal</div>
+      <div class="item">At Each Change In = same column used for sorting</div>
+      <div class="item">Use Function: SUM / COUNT / AVG / MAX / MIN</div>
+      <div class="item">Add Subtotal To = numeric column</div>
+      <div class="item">Remove: Data → Subtotal → Remove All</div>
+    </div>
+  </div>
+
+  <p class="slabel">Filtering</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-amber">Auto Filter</span></div>
+    <div class="item">Click anywhere in data → Data → Filter (arrows appear on headers)</div>
+    <div class="item"><strong>Text Filter:</strong> Equals / Begins With / Contains / Does Not Contain</div>
+    <div class="item"><strong>Number Filter:</strong> Greater Than, Between, Top 10 (use Bottom for least)</div>
+    <div class="item">OR condition: select two values in same column's filter dialog</div>
+    <div class="item">Remove filter: click Filter again  OR  Undo</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge b-red">Advanced Filter</span></div>
+    <div class="item"><strong>AND</strong> — conditions on the same row of criteria range</div>
+    <div class="item"><strong>OR</strong> — conditions on different rows of criteria range</div>
+    <div class="item">Data → Advanced Filter → set List Range + Criteria Range</div>
+    <div class="item">Can copy filtered results to another location</div>
+    <div class="tip">Unlike AutoFilter, Advanced Filter can impose conditions on multiple columns simultaneously</div>
+  </div>
+
+  <p class="slabel">What-If Analysis</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Goal Seek</span></div>
+      <div class="item">Finds ONE input value for a target output</div>
+      <div class="item">Data → Data Tools → What-If Analysis → Goal Seek</div>
+      <div class="item"><strong>Set Cell</strong> = formula cell (must contain a formula)</div>
+      <div class="item"><strong>To Value</strong> = target result</div>
+      <div class="item"><strong>By Changing Cell</strong> = the variable to adjust</div>
+      <div class="item">Click OK to apply; Cancel to revert</div>
+      <div class="tip">Limitation: only one changing variable at a time</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-purple">Scenario Manager</span></div>
+      <div class="item">Compare effect of multiple changing value sets</div>
+      <div class="item">Data → What-If Analysis → Scenario Manager → Add</div>
+      <div class="item">Give scenario a name → set Changing Cells → enter values</div>
+      <div class="item">Add multiple scenarios (e.g. Original, Pay Hike 1, Pay Hike 2)</div>
+      <div class="item">Summary → Scenario Summary → set Result Cells → OK</div>
+      <div class="tip">Widely used in budgeting to compare different expense/income scenarios</div>
+    </div>
+  </div>
+
+  <p class="slabel">Pivot Tables</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-green">Creating & Configuring</span></div>
+    <div class="item">Click anywhere in data → Insert → Pivot Table → choose New/Existing worksheet</div>
+    <div class="item">Drag fields to: <strong>Rows</strong> / <strong>Columns</strong> / <strong>Values</strong> / <strong>Filters</strong></div>
+    <div class="item">Default Value function = SUM; change via drop-down → Count / Max / Min / Avg</div>
+    <div class="item">Show Values As: % of Grand Total / Rank Largest→Smallest / No Calculation</div>
+    <div class="item">Group dates: click date cell → Analyse → Group Selection → select Year + Month</div>
+    <div class="item">Refresh: Pivot Table Tools → Data → Refresh (after changing source data)</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-amber">Slicers</span></div>
+      <div class="item">Pivot Table Tools → Analyse → Insert Slicer</div>
+      <div class="item">Select a field (e.g. STATE) → visual filter buttons appear</div>
+      <div class="item">Click a value to filter; X to clear filter</div>
+      <div class="item">Delete: click slicer → Delete key</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-red">Multiple Pivot Tables</span></div>
+      <div class="item">Insert slicer in one pivot table</div>
+      <div class="item">Right-click slicer → Report Connections</div>
+      <div class="item">Check all pivot tables to link → OK</div>
+      <div class="item">Filtering slicer now controls all linked pivot tables</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== CHARTS ===================== -->
+<div id="charts" class="section">
+
+  <p class="slabel">Chart Types</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Types & When to Use</span></div>
+      <div class="item"><strong>Column</strong> — vertical bars; rows/columns data; 2D or 3D</div>
+      <div class="item"><strong>Bar</strong> — horizontal bars; same data as column</div>
+      <div class="item"><strong>Line</strong> — trends over time; 2D</div>
+      <div class="item"><strong>Pie</strong> — 1 series only; ≤7 categories; no negative values</div>
+      <div class="item"><strong>Doughnut</strong> — 2+ concentric pie charts; compare multiple series</div>
+      <div class="item"><strong>Area</strong> — line with filled region below; highlights magnitude</div>
+      <div class="item"><strong>Sparklines</strong> — mini charts inside single cells</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">Insert & Edit</span></div>
+      <div class="item">Select data → Insert → Charts → choose type</div>
+      <div class="item"><strong>Non-contiguous:</strong> select first range, hold Ctrl, select second</div>
+      <div class="item">Add elements: click <code>+</code> next to chart</div>
+      <div class="item">Elements: Axes, Axes Title, Chart Title, Data Labels, Legend, Gridlines, Trendline</div>
+      <div class="item">Change chart type: right-click chart → Change Chart Type</div>
+      <div class="item">Delete chart: click chart area → Delete key</div>
+    </div>
+  </div>
+
+  <p class="slabel">Chart Tools</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-amber">Chart Filter</span></div>
+      <div class="item">Click funnel icon next to chart</div>
+      <div class="item">Check/uncheck Series or Categories to show/hide</div>
+      <div class="item">Click Apply to update chart</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-purple">Sparklines</span></div>
+      <div class="item">Select data → Quick Analysis (Ctrl+Q) → Sparklines</div>
+      <div class="item">Mini line/bar/win-loss charts placed inside individual cells</div>
+    </div>
+  </div>
+
+  <p class="slabel">Quick Chart via Quick Analysis</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-blue">Ctrl+Q Shortcut</span></div>
+    <div class="item">Select data → <code>Ctrl+Q</code> → Charts tab → choose chart type → OK</div>
+    <div class="item">Also accessible via the Quick Analysis icon at the bottom-right of any selection</div>
+  </div>
+
+</div>
+
+<!-- ===================== ADVANCED ===================== -->
+<div id="advanced" class="section">
+
+  <p class="slabel">Rows, Columns & Sheets</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Row / Column Ops</span></div>
+      <div class="item"><strong>Hide:</strong> right-click → Hide</div>
+      <div class="item"><strong>Unhide:</strong> select surrounding rows/cols → right-click → Unhide</div>
+      <div class="item"><strong>Insert:</strong> Home → Cells → Insert → Insert Sheet Rows/Columns</div>
+      <div class="item"><strong>Delete:</strong> Home → Cells → Delete → Delete Sheet Rows/Columns</div>
+      <div class="item">Insert multiple: select same count of rows/cols first, then insert</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-green">Sheet Ops</span></div>
+      <div class="item"><strong>Rename:</strong> double-click tab → type → Enter</div>
+      <div class="item"><strong>Insert sheet:</strong> click + icon next to sheet tabs</div>
+      <div class="item"><strong>Delete sheet:</strong> Home → Cells → Delete → Delete Sheet</div>
+      <div class="item"><strong>Hide sheet:</strong> Home → Cells → Format → Hide & Unhide → Hide Sheet</div>
+      <div class="item"><strong>Edit multiple sheets:</strong> Ctrl+click tabs to group → edits apply to all</div>
+    </div>
+  </div>
+
+  <p class="slabel">Paste Special</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-amber">Options (Copy only — not Cut)</span></div>
+    <div class="item"><strong>All</strong> — same as normal paste</div>
+    <div class="item"><strong>Values</strong> — pastes results only, not the formula</div>
+    <div class="item"><strong>Formulas</strong> — pastes formulas and values</div>
+    <div class="item"><strong>Transpose</strong> — swaps rows ↔ columns</div>
+    <div class="item"><strong>Skip Blanks</strong> — destination keeps value if source is blank</div>
+    <div class="item"><strong>Operations:</strong> Add / Subtract / Multiply / Divide on destination cells</div>
+    <div class="tip">Access: Right-click destination → Paste Special  OR  Home → Paste → Paste Special</div>
+  </div>
+
+  <p class="slabel">Named Ranges</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-red">Define & Use</span></div>
+    <div class="item">Select range → Formulas → Define Name → type name → OK</div>
+    <div class="item">Or: select range → right-click → Define Name</div>
+    <div class="item">Or: select range → click Name Box → type name</div>
+    <div class="item">Rules: max 255 chars, no spaces, start with letter or underscore, must be unique</div>
+    <div class="item">Use in formulas: <code>=Basic*20%</code> instead of <code>=$B$2:$B$5*20%</code></div>
+    <div class="item">Delete: Formulas → Name Manager → select → Delete</div>
+  </div>
+
+  <p class="slabel">Page Setup & Utilities</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge b-purple">Page & Print</span></div>
+      <div class="item"><strong>Header/Footer:</strong> Insert → Header & Footer</div>
+      <div class="item"><strong>Page Break:</strong> Page Layout → Breaks → Insert/Remove Page Break</div>
+      <div class="item"><strong>Print Preview:</strong> File → Print → Print Preview</div>
+      <div class="item"><strong>Page Layout views:</strong> Normal / Page Layout / Page Break Preview</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge b-blue">Find, Replace & Spell</span></div>
+      <div class="item"><strong>Find:</strong> Home → Find & Select → Find → type → Find Next</div>
+      <div class="item"><strong>Replace:</strong> same path → Replace tab</div>
+      <div class="item"><strong>Spell Check:</strong> Review → Spelling</div>
+      <div class="item"><strong>Undo/Redo:</strong> Ctrl+Z / Ctrl+Y  or Quick Access Toolbar buttons</div>
+    </div>
+  </div>
+
+  <p class="slabel">Workbook Linking</p>
+  <div class="card">
+    <div class="card-title"><span class="badge b-green">External References</span></div>
+    <div class="item"><strong>Source workbook</strong> = where the data originates</div>
+    <div class="item"><strong>Dependent workbook</strong> = contains link to source</div>
+    <div class="item">Syntax: <code>[SALARY.xlsx]Sheet1!B2</code></div>
+    <div class="item">Any change in source auto-updates dependent workbook</div>
+    <div class="item"><strong>Create by pointing:</strong> activate dependent cell → start formula → switch to source → click cell → Enter</div>
+    <div class="item"><strong>Paste Link:</strong> Copy source cells → Paste Special → Paste Link in dependent workbook</div>
+    <div class="tip">Can use named ranges across workbooks: =BASIC!Salary*20%</div>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+const tabs = ['basics','formatting','functions','data','charts','advanced'];
+const prog = document.getElementById('progress');
+
+tabs.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.id = 'dot-' + i;
+  prog.appendChild(d);
+});
+
+function show(id, idx) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  document.getElementById('dot-' + idx).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('keydown', e => {
+  const active = tabs.findIndex(t => document.getElementById(t).classList.contains('active'));
+  if (e.key === 'ArrowRight' && active < tabs.length - 1) show(tabs[active+1], active+1);
+  if (e.key === 'ArrowLeft' && active > 0) show(tabs[active-1], active-1);
+});
+</script>
+</body>
+</html>
